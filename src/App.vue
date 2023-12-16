@@ -1,23 +1,11 @@
 <template>
   <v-app>
-    <v-main>
-      <HelloWorld/>
-    </v-main>
+    <NavigationBar />
+
+    <router-view />
   </v-app>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
-
-  components: {
-    HelloWorld,
-  },
-
-  data: () => ({
-    //
-  }),
-}
+<script setup>
+import NavigationBar from "./components/NavigationBar.vue";
 </script>
