@@ -1,10 +1,10 @@
+import { createRouter, createWebHistory } from "vue-router";
 import ConctactsView from "../views/ContactsView.vue";
 import AddView from "../views/AddView.vue";
 import EditView from "../views/EditView.vue";
 import PersonView from "../views/PersonView.vue";
-import { RouteRecordRaw } from "vue-router";
 
-const routes: Array<RouteRecordRaw> = [
+const routes = [
   {
     path: "/",
     name: "contacts",
@@ -16,13 +16,20 @@ const routes: Array<RouteRecordRaw> = [
     component: AddView,
   },
   {
-    path: "edit/",
+    path: "/edit",
     name: "edit",
     component: EditView,
   },
   {
-    path: "/",
+    path: "/person",
     name: "person",
     component: PersonView,
   },
 ];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+export default router;
