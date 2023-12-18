@@ -1,8 +1,10 @@
 <template>
   <v-app>
-    <NavigationBar />
-    <div class="app-padding">
-      <router-view />
+    <div class="app">
+      <NavigationBar />
+      <div class="app-padding">
+        <router-view />
+      </div>
     </div>
   </v-app>
 </template>
@@ -12,7 +14,9 @@ import NavigationBar from "./components/NavigationBar.vue";
 </script>
 
 <style>
-.app-padding {
-  padding-top: 4rem;
+.app {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
 }
 </style>
