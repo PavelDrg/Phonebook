@@ -12,7 +12,7 @@ export default createStore({
         notes: "Accountant",
       },
       {
-        id: 1,
+        id: 2,
         first_name: "Alexandru",
         last_name: "Lacatusu",
         company: "Blueprint",
@@ -20,7 +20,7 @@ export default createStore({
         notes: "Lawyer",
       },
       {
-        id: 1,
+        id: 3,
         first_name: "Ion",
         last_name: "Popescu",
         company: "Amazon",
@@ -30,7 +30,24 @@ export default createStore({
     ],
   },
   getters: {},
-  mutations: {},
-  actions: {},
+  mutations: {
+    addContact(state, contact) {
+      state.contacts.push(contact);
+    },
+    deleteContact(state, contact) {
+      state.contacts.splice(contact, 1);
+    },
+  },
+  actions: {
+    addContact(context, contact) {
+      context.commit("addContact", contact);
+    },
+    deleteContact(context, id) {
+      const contact = context.state.contacts.find(
+        (contact) => contact.id === id
+      );
+      context.commit("deleteContact", contact);
+    },
+  },
   modules: {},
 });

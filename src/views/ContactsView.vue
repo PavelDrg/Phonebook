@@ -1,5 +1,5 @@
 <template>
-  <v-card class="phonebook-card" v-for="contact in contacts" :key="contact.id">
+  <v-card class="contacts-card" v-for="contact in contacts" :key="contact.id">
     <v-card-title>
       {{ contact.first_name }} {{ contact.last_name }}
     </v-card-title>
@@ -18,7 +18,7 @@ const contacts = store.state.contacts;
 </script>
 
 <style scoped>
-.phonebook-card {
+.contacts-card {
   width: 65vw;
   margin: 2vh 0;
 }

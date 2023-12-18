@@ -19,4 +19,7 @@ import NavigationBar from "./components/NavigationBar.vue";
   flex-direction: row;
   min-height: 100vh;
 }
+.app-padding {
+  width: 100%;
+}
 </style>
