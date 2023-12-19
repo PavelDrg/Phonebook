@@ -2,15 +2,13 @@
   <div class="page-container">
     <div>
       <div class="search_bars">
-        <v-autocomplete
+        <v-text-field
           v-model="search"
-          :items="autocompleteItems"
           label="Search by name"
           placeholder="Start typing..."
           clearable
-          @input="filterContacts"
-        ></v-autocomplete>
-
+          @change="handleInputChange($event)"
+        ></v-text-field>
         <v-select
           v-model="selectedCompany"
           :items="companyOptions"
@@ -20,8 +18,12 @@
         ></v-select>
       </div>
       <div class="sort_buttons">
-        <v-btn color="primary">First name</v-btn>
-        <v-btn color="primary">Last name</v-btn>
+        <v-btn color="primary" @click="changeSortingDirrection('firstName')"
+          >First name</v-btn
+        >
+        <v-btn color="primary" @click="changeSortingDirrection('lastName')"
+          >Last name</v-btn
+        >
       </div>
       <div class="contacts-container">
         <v-card
@@ -41,29 +43,41 @@
         </v-card>
       </div>
     </div>
-    <v-container class="navbar-right" v-if="selectedContact">
-      <p class="details-bar-name">
-        {{ selectedContact.first_name }} <br />
-        {{ selectedContact.last_name }}
-      </p>
+    <v-navigation-drawer
+      location="right"
+      class="navbar-right"
+      v-if="selectedContact"
+    >
+      <div class="d-flex">
+        <p class="details-bar-name">
+          {{ selectedContact.first_name }} <br />
+          {{ selectedContact.last_name }}
+        </p>
+        <v-btn
+          class="details-bar-button close"
+          color="transparent"
+          elevation="0"
+          @click="clearSelectedContact"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </div>
       <v-divider></v-divider>
       <p class="details-bar-content">Company: {{ selectedContact.company }}</p>
       <p class="details-bar-content">
         Phone: {{ selectedContact.phone_number }}
       </p>
       <p class="details-bar-content">Notes: {{ selectedContact.notes }}</p>
-      <v-btn class="details-bar-button" color="primary">Call</v-btn>
-      <v-btn class="details-bar-button" color="primary" to="/edit">Edit</v-btn>
-      <v-btn class="details-bar-button" color="primary" to="/person"
-        >View</v-btn
-      >
-      <v-btn
-        class="details-bar-button"
-        color="primary"
-        @click="clearSelectedContact"
-        >Close</v-btn
-      >
-    </v-container>
+      <div class="details-bar-buttons">
+        <v-btn class="details-bar-button" color="primary">Call</v-btn>
+        <v-btn class="details-bar-button" color="primary" to="/edit"
+          >Edit</v-btn
+        >
+        <v-btn class="details-bar-button" color="primary" to="/person"
+          >View</v-btn
+        >
+      </div>
+    </v-navigation-drawer>
     <v-main style="height: 100vh"></v-main>
   </div>
 </template>
@@ -78,19 +92,34 @@ const contacts = store.state.contacts;
 const search = ref("");
 const selectedContact = ref(null);
 const selectedCompany = ref(null);
+const firstNameSortDirection = ref(0); // I chose the following: 0 = unsorted, 1 = ascending, 2 = descending
+const lastNameSortDirection = ref(0);
 
-function selectContact(contact) {
+const changeSortingDirrection = (filter) => {
+  if (filter === "firstName") {
+    firstNameSortDirection.value = (firstNameSortDirection.value + 1) % 3;
+    if (firstNameSortDirection.value !== 0) lastNameSortDirection.value = 0;
+  }
+  if (filter === "lastName") {
+    lastNameSortDirection.value = (lastNameSortDirection.value + 1) % 3;
+    if (lastNameSortDirection.value !== 0) firstNameSortDirection.value = 0;
+  }
+  console.log("last", lastNameSortDirection.value);
+  console.log("first", firstNameSortDirection.value);
+};
+
+const selectContact = (contact) => {
   selectedContact.value = contact;
-}
+};
 
-function clearSelectedContact() {
+const clearSelectedContact = () => {
   selectedContact.value = null;
-}
+};
 
 // Autocomplete items (names)
-const autocompleteItems = computed(() =>
-  contacts.map((contact) => `${contact.first_name} ${contact.last_name}`)
-);
+// const autocompleteItems = computed(() =>
+//   contacts.map((contact) => `${contact.first_name} ${contact.last_name}`)
+// );
 
 const filteredContacts = computed(() => {
   let filtered = contacts;
@@ -113,7 +142,37 @@ const filteredContacts = computed(() => {
     );
   }
 
-  return filtered;
+  return filtered.sort((a, b) => {
+    // console.log(firstNameSortDirection.value);
+    if (lastNameSortDirection.value === 0) {
+      switch (firstNameSortDirection.value) {
+        case 1:
+          return (
+            a.first_name.toLowerCase().charCodeAt(0) -
+            b.first_name.toLowerCase().charCodeAt(0)
+          );
+        case 2:
+          return (
+            b.first_name.toLowerCase().charCodeAt(0) -
+            a.first_name.toLowerCase().charCodeAt(0)
+          );
+      }
+    } else {
+      switch (lastNameSortDirection.value) {
+        case 1:
+          return (
+            a.last_name.toLowerCase().charCodeAt(0) -
+            b.last_name.toLowerCase().charCodeAt(0)
+          );
+        case 2:
+          return (
+            b.last_name.toLowerCase().charCodeAt(0) -
+            a.last_name.toLowerCase().charCodeAt(0)
+          );
+      }
+    }
+    return 0;
+  });
 });
 
 const companyOptions = computed(() => {
@@ -121,8 +180,8 @@ const companyOptions = computed(() => {
   return Array.from(uniqueCompanies);
 });
 
-const filterContacts = () => {
-  // Update the filtered contacts based on search input
+const handleInputChange = (event) => {
+  search.value = event.target.value;
 };
 
 const filterByCompany = () => {
@@ -148,7 +207,7 @@ const filterByCompany = () => {
 }
 
 .navbar-right {
-  width: 15vw;
+  width: 15vw !important;
   margin-left: auto;
   margin-right: 0;
   display: flex;
@@ -167,6 +226,18 @@ const filterByCompany = () => {
 
 .details-bar-button {
   margin: 2vh 1vw;
+}
+
+.close {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  margin: 4px !important;
+}
+
+.details-bar-buttons {
+  display: flex;
+  flex-direction: column;
 }
 
 .search_bars {
