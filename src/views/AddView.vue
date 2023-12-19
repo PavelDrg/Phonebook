@@ -10,7 +10,7 @@
         ></v-text-field>
         <v-text-field
           v-model="formData.last_name"
-          variant="solo"
+          variant="outlined"
           label="Last Name"
         ></v-text-field>
         <v-text-field
