@@ -1,26 +1,50 @@
 <template>
   <div class="page-container">
-    <div class="contacts-container">
-      <v-card
-        class="contacts-card"
-        v-for="contact in contacts"
-        :key="contact.id"
-        @click="selectContact(contact)"
-      >
-        <v-card-title>
-          {{ contact.first_name }} {{ contact.last_name }}
-        </v-card-title>
-        <v-card-subtitle>{{ contact.company }}</v-card-subtitle>
-        <v-card-text
-          >{{ contact.phone_number }} <br />
-          {{ contact.notes }}</v-card-text
-        >
-      </v-card>
-    </div>
+    <div>
+      <div class="search_bars">
+        <v-autocomplete
+          v-model="search"
+          :items="autocompleteItems"
+          label="Search by name"
+          placeholder="Start typing..."
+          clearable
+          @input="filterContacts"
+        ></v-autocomplete>
 
+        <v-select
+          v-model="selectedCompany"
+          :items="companyOptions"
+          label="Select by company"
+          clearable
+          @change="filterByCompany"
+        ></v-select>
+      </div>
+      <div class="sort_buttons">
+        <v-btn color="primary">First name</v-btn>
+        <v-btn color="primary">Last name</v-btn>
+      </div>
+      <div class="contacts-container">
+        <v-card
+          class="contacts-card"
+          v-for="contact in filteredContacts"
+          :key="contact.id"
+          @click="selectContact(contact)"
+        >
+          <v-card-title>
+            {{ contact.first_name }} {{ contact.last_name }}
+          </v-card-title>
+          <v-card-subtitle>{{ contact.company }}</v-card-subtitle>
+          <v-card-text
+            >{{ contact.phone_number }} <br />
+            {{ contact.notes }}</v-card-text
+          >
+        </v-card>
+      </div>
+    </div>
     <v-container class="navbar-right" v-if="selectedContact">
       <p class="details-bar-name">
-        {{ selectedContact.first_name }} {{ selectedContact.last_name }}
+        {{ selectedContact.first_name }} <br />
+        {{ selectedContact.last_name }}
       </p>
       <v-divider></v-divider>
       <p class="details-bar-content">Company: {{ selectedContact.company }}</p>
@@ -46,13 +70,15 @@
 
 <script setup>
 import { useStore } from "vuex";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 // import DetailsBar from "../components/DetailsBar.vue";
 
 const store = useStore();
 const contacts = store.state.contacts;
 
+const search = ref("");
 const selectedContact = ref(null);
+const selectedCompany = ref(null);
 
 function selectContact(contact) {
   selectedContact.value = contact;
@@ -60,6 +86,45 @@ function selectContact(contact) {
 
 function clearSelectedContact() {
   selectedContact.value = null;
+}
+
+// Autocomplete items (names)
+const autocompleteItems = computed(() =>
+  contacts.map((contact) => `${contact.first_name} ${contact.last_name}`)
+);
+
+const filteredContacts = computed(() => {
+  let filtered = contacts;
+
+  if (search.value) {
+    const searchRegex = new RegExp(search.value, "i");
+    filtered = filtered.filter(
+      (contact) =>
+        searchRegex.test(contact.first_name) ||
+        searchRegex.test(contact.last_name)
+    );
+  }
+
+  if (selectedCompany.value) {
+    filtered = filtered.filter(
+      (contact) => contact.company === selectedCompany.value
+    );
+  }
+
+  return filtered;
+});
+
+const companyOptions = computed(() => {
+  const uniqueCompanies = new Set(contacts.map((contact) => contact.company));
+  return Array.from(uniqueCompanies);
+});
+
+function filterContacts() {
+  // Update the filtered contacts based on search input
+}
+
+function filterByCompany() {
+  // Update the filtered contacts based on selected company
 }
 </script>
 
@@ -100,5 +165,12 @@ function clearSelectedContact() {
 
 .details-bar-button {
   margin: 2vh 1vw;
+}
+
+.search_bars {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 70vw;
 }
 </style>
