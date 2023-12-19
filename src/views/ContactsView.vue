@@ -71,7 +71,6 @@
 <script setup>
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
-// import DetailsBar from "../components/DetailsBar.vue";
 
 const store = useStore();
 const contacts = store.state.contacts;
@@ -98,11 +97,14 @@ const filteredContacts = computed(() => {
 
   if (search.value) {
     const searchRegex = new RegExp(search.value, "i");
-    filtered = filtered.filter(
-      (contact) =>
-        searchRegex.test(contact.first_name) ||
-        searchRegex.test(contact.last_name)
-    );
+    console.log(searchRegex);
+    filtered = filtered.filter((contact) => {
+      searchRegex.lastIndex = 1;
+      let match1 = searchRegex.test(contact.first_name.trim());
+      searchRegex.lastIndex = 1;
+      let match2 = searchRegex.test(contact.last_name.trim());
+      return match1 || match2;
+    });
   }
 
   if (selectedCompany.value) {
@@ -119,13 +121,13 @@ const companyOptions = computed(() => {
   return Array.from(uniqueCompanies);
 });
 
-function filterContacts() {
+const filterContacts = () => {
   // Update the filtered contacts based on search input
-}
+};
 
-function filterByCompany() {
+const filterByCompany = () => {
   // Update the filtered contacts based on selected company
-}
+};
 </script>
 
 <style scoped>
