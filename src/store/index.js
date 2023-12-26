@@ -37,6 +37,13 @@ export default createStore({
     deleteContact(state, contact) {
       state.contacts.splice(contact, 1);
     },
+    editContact(state, contact) {
+      console.log(contact);
+      if (contact.id !== -1) {
+        console.log(contact.id);
+        state.contacts[contact.id - 1] = contact;
+      }
+    },
   },
   actions: {
     addContact(context, contact) {

@@ -65,22 +65,45 @@ const props = defineProps({
   dialog: { type: Boolean, required: false },
   contact: { type: Object, required: false },
 });
-console.log(props);
 
 const isDialogVisible = ref(props.dialog);
 const formData = ref({
-  first_name: props.contact.first_name ? props.contact.first_name : "",
-  last_name: props.contact.last_name ? props.contact.last_name : "",
-  company: props.contact.company ? props.contact.company : "",
-  phone_number: props.contact.phone_number ? props.contact.phone_number : "",
-  notes: props.contact.notes ? props.contact.notes : "",
-  id: props.contact.id ? props.contact.id : "",
+  first_name: props.contact ? props.contact.first_name : "",
+  last_name: props.contact ? props.contact.last_name : "",
+  company: props.contact ? props.contact.company : "",
+  phone_number: props.contact ? props.contact.phone_number : "",
+  notes: props.contact ? props.contact.notes : "",
+  id: props.contact ? props.contact.id : -1,
 });
 
 watch(
   () => props.dialog,
   (newVal) => {
     isDialogVisible.value = newVal;
+  }
+);
+
+//// Reset form data when dialog is closed
+watch(
+  () => isDialogVisible.value,
+  (newVal, oldVal) => {
+    if (newVal === false && oldVal === true) {
+      formData.value = props.contact;
+    }
+  }
+);
+
+watch(
+  () => props.contact,
+  (newVal) => {
+    formData.value = {
+      first_name: newVal.first_name,
+      last_name: newVal.last_name,
+      company: newVal.company,
+      phone_number: newVal.phone_number,
+      notes: newVal.notes,
+      id: newVal.id,
+    };
   }
 );
 

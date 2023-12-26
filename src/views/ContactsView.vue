@@ -115,8 +115,6 @@ const changeSortingDirrection = (filter) => {
     lastNameSortDirection.value = (lastNameSortDirection.value + 1) % 3;
     if (lastNameSortDirection.value !== 0) firstNameSortDirection.value = 0;
   }
-  console.log("last", lastNameSortDirection.value);
-  console.log("first", firstNameSortDirection.value);
 };
 
 const selectContact = (contact) => {
@@ -137,7 +135,6 @@ const filteredContacts = computed(() => {
 
   if (search.value) {
     const searchRegex = new RegExp(search.value, "i");
-    console.log(searchRegex);
     filtered = filtered.filter((contact) => {
       searchRegex.lastIndex = 1;
       let match1 = searchRegex.test(contact.first_name.trim());
@@ -156,7 +153,6 @@ const filteredContacts = computed(() => {
   }
 
   return filtered.sort((a, b) => {
-    // console.log(firstNameSortDirection.value);
     if (lastNameSortDirection.value === 0) {
       switch (firstNameSortDirection.value) {
         case 1:
@@ -205,10 +201,9 @@ const openEditDialog = () => {
   dialogRef.value = true;
 };
 
-const editContact = () => {
-  // console.log("edited contact", contact);
-  // store.dispatch("editContact", contact);
-  // dialogRef.value = false;
+const editContact = (contact) => {
+  store.commit("editContact", contact);
+  dialogRef.value = false;
 };
 </script>
 

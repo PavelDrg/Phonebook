@@ -58,7 +58,10 @@ const formData = ref({
 
 const addContact = () => {
   console.log("added form data", formData.value);
-  store.dispatch("addContact", formData.value);
+  store.dispatch("addContact", {
+    ...formData.value,
+    id: store.state.contacts.length + 1,
+  });
   dialog.value = false;
 };
 
