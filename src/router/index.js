@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import ConctactsView from "../views/ContactsView.vue";
 import AddView from "../views/AddView.vue";
-import EditView from "../views/EditView.vue";
 import PersonView from "../views/PersonView.vue";
 
 const routes = [
@@ -14,11 +13,6 @@ const routes = [
     path: "/add",
     name: "add",
     component: AddView,
-  },
-  {
-    path: "/edit",
-    name: "edit",
-    component: EditView,
   },
   {
     path: "/person",

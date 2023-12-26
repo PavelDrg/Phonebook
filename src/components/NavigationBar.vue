@@ -30,22 +30,6 @@
             value="New contact"
           >
           </v-list-item>
-          <v-list-item
-            link
-            to="/edit"
-            prepend-icon="mdi-pencil"
-            title="Edit contact"
-            value="Edit contact"
-          >
-          </v-list-item>
-          <v-list-item
-            link
-            to="/person"
-            prepend-icon="mdi-account"
-            title="View contact"
-            value="View contact"
-          >
-          </v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 100vh"></v-main>
