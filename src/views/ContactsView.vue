@@ -70,7 +70,10 @@
       <p class="details-bar-content">Notes: {{ selectedContact.notes }}</p>
       <div class="details-bar-buttons">
         <v-btn class="details-bar-button" color="primary">Call</v-btn>
-        <v-btn class="details-bar-button" color="primary" to="/edit"
+        <v-btn
+          class="details-bar-button"
+          color="primary"
+          @click="openEditDialog"
           >Edit</v-btn
         >
         <v-btn class="details-bar-button" color="primary" to="/person"
@@ -79,12 +82,19 @@
       </div>
     </v-navigation-drawer>
     <v-main style="height: 100vh"></v-main>
+    <EditDialog
+      :dialog="dialogRef"
+      @close-dialog="dialogRef = false"
+      @edit-contact="editContact"
+      :contact="selectedContact"
+    />
   </div>
 </template>
 
 <script setup>
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
+import EditDialog from "@/components/EditDialog.vue";
 
 const store = useStore();
 const contacts = store.state.contacts;
@@ -94,6 +104,7 @@ const selectedContact = ref(null);
 const selectedCompany = ref(null);
 const firstNameSortDirection = ref(0); // I chose the following: 0 = unsorted, 1 = ascending, 2 = descending
 const lastNameSortDirection = ref(0);
+const dialogRef = ref(false);
 
 const changeSortingDirrection = (filter) => {
   if (filter === "firstName") {
@@ -130,8 +141,10 @@ const filteredContacts = computed(() => {
     filtered = filtered.filter((contact) => {
       searchRegex.lastIndex = 1;
       let match1 = searchRegex.test(contact.first_name.trim());
+
       searchRegex.lastIndex = 1;
       let match2 = searchRegex.test(contact.last_name.trim());
+
       return match1 || match2;
     });
   }
@@ -186,6 +199,16 @@ const handleInputChange = (event) => {
 
 const filterByCompany = () => {
   // Update the filtered contacts based on selected company
+};
+
+const openEditDialog = () => {
+  dialogRef.value = true;
+};
+
+const editContact = () => {
+  // console.log("edited contact", contact);
+  // store.dispatch("editContact", contact);
+  // dialogRef.value = false;
 };
 </script>
 
