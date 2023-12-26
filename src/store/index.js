@@ -29,7 +29,11 @@ export default createStore({
       },
     ],
   },
-  getters: {},
+  getters: {
+    getContactById: (state) => (id) => {
+      return state.contacts.find((contact) => contact.id === id);
+    },
+  },
   mutations: {
     addContact(state, contact) {
       state.contacts.push(contact);

@@ -76,7 +76,10 @@
           @click="openEditDialog"
           >Edit</v-btn
         >
-        <v-btn class="details-bar-button" color="primary" to="/person"
+        <v-btn
+          class="details-bar-button"
+          color="primary"
+          @click="navigateContact(selectedContact.id)"
           >View</v-btn
         >
       </div>
@@ -92,11 +95,13 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
 import EditDialog from "@/components/EditDialog.vue";
 
 const store = useStore();
+const router = useRouter();
 const contacts = store.state.contacts;
 
 const search = ref("");
@@ -204,6 +209,12 @@ const openEditDialog = () => {
 const editContact = (contact) => {
   store.commit("editContact", contact);
   dialogRef.value = false;
+};
+
+const navigateContact = (id) => {
+  console.log(id);
+  let stringId = String(id);
+  router.push({ name: "person", params: { id: stringId } });
 };
 </script>
 

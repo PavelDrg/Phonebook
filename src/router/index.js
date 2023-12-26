@@ -15,7 +15,7 @@ const routes = [
     component: AddView,
   },
   {
-    path: "/person",
+    path: "/person/:id",
     name: "person",
     component: PersonView,
   },
