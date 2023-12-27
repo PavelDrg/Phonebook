@@ -18,10 +18,16 @@
         ></v-select>
       </div>
       <div class="sort_buttons">
-        <v-btn color="primary" @click="changeSortingDirrection('firstName')"
+        <v-btn
+          class="sort"
+          variant="outlined"
+          @click="changeSortingDirrection('firstName')"
           >First name</v-btn
         >
-        <v-btn color="primary" @click="changeSortingDirrection('lastName')"
+        <v-btn
+          class="sort"
+          variant="outlined"
+          @click="changeSortingDirrection('lastName')"
           >Last name</v-btn
         >
       </div>
@@ -274,5 +280,9 @@ const navigateContact = (id) => {
   flex-direction: row;
   justify-content: space-between;
   width: 70vw;
+}
+
+.sort {
+  margin-right: 0.25vw;
 }
 </style>
