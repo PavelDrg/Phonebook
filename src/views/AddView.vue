@@ -5,6 +5,8 @@
       <v-form @submit.prevent="handleSubmit">
         <v-text-field
           v-model="formData.first_name"
+          :rules="[() => !!formData.first_name || 'First name is required']"
+          required
           variant="outlined"
           label="First Name"
         ></v-text-field>
@@ -15,11 +17,18 @@
         ></v-text-field>
         <v-text-field
           v-model="formData.company"
+          :rules="[() => !!formData.company || 'Company is required']"
+          required
           variant="outlined"
           label="Company"
         ></v-text-field>
         <v-text-field
           v-model="formData.phone_number"
+          :rules="[
+            () => !!formData.phone_number || 'Phone number is required',
+            (number) => /^\d+$/.test(number) || 'Only numbers are allowed',
+          ]"
+          required
           variant="outlined"
           label="Phone Number"
         ></v-text-field>
@@ -28,7 +37,17 @@
           variant="outlined"
           label="Notes"
         ></v-text-field>
-        <v-btn color="primary" type="submit">Add Contact</v-btn>
+        <v-btn
+          color="primary"
+          type="submit"
+          :disabled="
+            !formData.first_name ||
+            !formData.company ||
+            !formData.phone_number ||
+            /^\d+$/.test(formData.phone_number) === false
+          "
+          >Add Contact</v-btn
+        >
       </v-form>
     </v-col>
     <ConfirmDialog
@@ -63,6 +82,13 @@ const addContact = () => {
     id: store.state.contacts.length + 1,
   });
   dialog.value = false;
+  formData.value = {
+    first_name: "",
+    last_name: "",
+    company: "",
+    phone_number: "",
+    notes: "",
+  };
 };
 
 const handleSubmit = () => {
@@ -70,4 +96,12 @@ const handleSubmit = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.v-input {
+  margin-bottom: 20px;
+}
+
+.v-input:first-child {
+  margin-top: 20px;
+}
+</style>

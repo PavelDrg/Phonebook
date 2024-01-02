@@ -22,37 +22,53 @@
           class="sort"
           variant="outlined"
           @click="changeSortingDirrection('firstName')"
-          >First name</v-btn
-        >
+          >First name
+          <v-icon>{{
+            firstNameSortDirection === 1
+              ? "mdi-pan-up"
+              : firstNameSortDirection === 2
+              ? "mdi-pan-down"
+              : "mdi-circle-small"
+          }}</v-icon>
+        </v-btn>
         <v-btn
           class="sort"
           variant="outlined"
           @click="changeSortingDirrection('lastName')"
-          >Last name</v-btn
-        >
+          >Last name
+          <v-icon>{{
+            lastNameSortDirection === 1
+              ? "mdi-pan-up"
+              : lastNameSortDirection === 2
+              ? "mdi-pan-down"
+              : "mdi-circle-small"
+          }}</v-icon>
+        </v-btn>
       </div>
-      <div class="contacts-container">
-        <v-card
-          class="contacts-card"
-          v-for="contact in filteredContacts"
-          :key="contact.id"
-          @click="selectContact(contact)"
-        >
-          <v-card-title>
-            {{ contact.first_name }} {{ contact.last_name }}
-          </v-card-title>
-          <v-card-subtitle>{{ contact.company }}</v-card-subtitle>
-          <v-card-text
-            >{{ contact.phone_number }} <br />
-            {{ contact.notes }}</v-card-text
+      <div class="scrollable">
+        <div class="contacts-container">
+          <v-card
+            class="contacts-card"
+            v-for="contact in filteredContacts"
+            :key="contact.id"
+            @click="selectContact(contact)"
           >
-        </v-card>
+            <v-card-title>
+              {{ contact.first_name }} {{ contact.last_name }}
+            </v-card-title>
+            <v-card-subtitle>{{ contact.company }}</v-card-subtitle>
+            <v-card-text
+              >{{ contact.phone_number }} <br />
+              {{ contact.notes }}</v-card-text
+            >
+          </v-card>
+        </div>
       </div>
     </div>
     <v-navigation-drawer
       location="right"
       class="navbar-right"
-      v-if="selectedContact"
+      v-if="detailsBarOpen"
     >
       <div class="d-flex">
         <p class="details-bar-name">
@@ -63,7 +79,7 @@
           class="details-bar-button close"
           color="transparent"
           elevation="0"
-          @click="clearSelectedContact"
+          @click="closeDetailsBar"
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -75,7 +91,12 @@
       </p>
       <p class="details-bar-content">Notes: {{ selectedContact.notes }}</p>
       <div class="details-bar-buttons">
-        <v-btn class="details-bar-button" color="primary">Call</v-btn>
+        <v-btn
+          class="details-bar-button"
+          color="primary"
+          :href="`tel: ${selectedContact.phone_number}`"
+          >Call</v-btn
+        >
         <v-btn
           class="details-bar-button"
           color="primary"
@@ -110,6 +131,7 @@ const store = useStore();
 const router = useRouter();
 const contacts = store.state.contacts;
 
+const detailsBarOpen = ref(false);
 const search = ref("");
 const selectedContact = ref(null);
 const selectedCompany = ref(null);
@@ -130,10 +152,11 @@ const changeSortingDirrection = (filter) => {
 
 const selectContact = (contact) => {
   selectedContact.value = contact;
+  detailsBarOpen.value = true;
 };
 
-const clearSelectedContact = () => {
-  selectedContact.value = null;
+const closeDetailsBar = () => {
+  detailsBarOpen.value = false;
 };
 
 // Autocomplete items (names)
@@ -166,6 +189,8 @@ const filteredContacts = computed(() => {
   return filtered.sort((a, b) => {
     if (lastNameSortDirection.value === 0) {
       switch (firstNameSortDirection.value) {
+        case 0:
+          return a.id - b.id;
         case 1:
           return (
             a.first_name.toLowerCase().charCodeAt(0) -
@@ -179,6 +204,8 @@ const filteredContacts = computed(() => {
       }
     } else {
       switch (lastNameSortDirection.value) {
+        case 0:
+          return a.id - b.id;
         case 1:
           return (
             a.last_name.toLowerCase().charCodeAt(0) -
@@ -284,5 +311,14 @@ const navigateContact = (id) => {
 
 .sort {
   margin-right: 0.25vw;
+}
+
+.scrollable {
+  overflow-y: scroll;
+  height: 85vh;
+}
+
+.scrollable::-webkit-scrollbar {
+  display: none;
 }
 </style>
