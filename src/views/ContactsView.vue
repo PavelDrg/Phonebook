@@ -231,9 +231,7 @@ const handleInputChange = (event) => {
   search.value = event.target.value;
 };
 
-const filterByCompany = () => {
-  // Update the filtered contacts based on selected company
-};
+const filterByCompany = () => {};
 
 const openEditDialog = () => {
   dialogRef.value = true;
