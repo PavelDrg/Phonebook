@@ -109,14 +109,20 @@
           @click="navigateContact(selectedContact.id)"
           >View</v-btn
         >
+        <v-btn
+          class="details-bar-button"
+          color="primary"
+          @click="deleteContact(selectedContact.id)"
+          >Delete</v-btn
+        >
       </div>
     </v-navigation-drawer>
-    <v-main style="height: 100vh"></v-main>
+    <!-- <v-main style="height: 100vh"></v-main> -->
     <EditDialog
       :dialog="dialogRef"
+      :contact="selectedContact"
       @close-dialog="dialogRef = false"
       @edit-contact="editContact"
-      :contact="selectedContact"
     />
   </div>
 </template>
@@ -243,9 +249,12 @@ const editContact = (contact) => {
 };
 
 const navigateContact = (id) => {
-  console.log(id);
-  let stringId = String(id);
-  router.push({ name: "person", params: { id: stringId } });
+  router.push({ name: "person", params: { id: id } });
+};
+
+const deleteContact = (id) => {
+  store.dispatch("deleteContact", id);
+  detailsBarOpen.value = false;
 };
 </script>
 

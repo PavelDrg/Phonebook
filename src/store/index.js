@@ -39,12 +39,13 @@ export default createStore({
       state.contacts.push(contact);
     },
     deleteContact(state, contact) {
-      state.contacts.splice(contact, 1);
+      const index = state.contacts.indexOf(contact);
+      state.contacts.splice(index, 1);
     },
     editContact(state, contact) {
-      console.log(contact);
+      // console.log(contact);
       if (contact.id !== -1) {
-        console.log(contact.id);
+        // console.log(contact.id);
         state.contacts[contact.id - 1] = contact;
       }
     },
